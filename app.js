@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+// var session = require('express-session'); // 记录session
 
 var index = require('./routes/index');
 var api = require('./routes/api'); // 各种接口的路由
@@ -12,7 +13,7 @@ var app = express();
 
 // view engine setup
 app.engine('.html',require('ejs').__express);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public'));
 // app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
@@ -23,6 +24,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// app.use(session({ 
+//   secret: 'filmboard', 
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { maxAge: 20*1000}})
+// );  
+//session 时长为20秒,这个是以毫秒为单位,这样我们就建立一个session的会话，这是一个全局的设置
 
 app.use('/', index);
 app.use('/api', api);
@@ -42,7 +50,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error.html');
 });
 
 module.exports = app;
